@@ -1,0 +1,15 @@
+DROP SCHEMA IF EXISTS custom_controller_db_test;
+CREATE SCHEMA custom_controller_db_test;
+USE custom_controller_db_test;
+DROP TABLE IF EXISTS user;
+CREATE TABLE user(user_id int primary key AUTO_INCREMENT,email VARCHAR(100) NOT NULL UNIQUE, firstName VARCHAR(50) NOT NULL, lastName VARCHAR(50) NOT NULL, password VARCHAR(150) NOT NULL, role VARCHAR(50) NOT NULL);
+DROP TABLE IF EXISTS shipping_details;
+CREATE TABLE shipping_details( shipping_id INT PRIMARY KEY AUTO_INCREMENT, user_id INT, deliver_to VARCHAR(100) NOT NULL, street VARCHAR(100) NOT NULL, street2 VARCHAR(100) NOT NULL, city VARCHAR(100) NOT NULL, country VARCHAR(100) NOT NULL, county VARCHAR(100) NOT NULL, zip VARCHAR(100) NOT NULL, FOREIGN KEY (user_id) REFERENCES user (user_id));
+DROP TABLE IF EXISTS payment_details;
+CREATE TABLE payment_details( payment_id INT PRIMARY KEY AUTO_INCREMENT, user_id INT NOT NULL, cardNumber VARCHAR(16), nameOnCard VARCHAR(100), cvv VARCHAR(3), expiryDate varchar(10), FOREIGN KEY (user_id) REFERENCES user (user_id));
+DROP TABLE IF EXISTS customer_order;
+CREATE TABLE customer_order( order_id INT PRIMARY KEY AUTO_INCREMENT, user_id int NOT NULL, status VARCHAR(15), shipping_id INT NOT NULL, payment_id INT NOT NULL, date_ordered Date NOT NULL, FOREIGN KEY (shipping_id) REFERENCES shipping_details (shipping_id), FOREIGN KEY (user_id) REFERENCES user (user_id), FOREIGN KEY (payment_id) REFERENCES payment_details (payment_id));
+DROP TABLE IF EXISTS controller;
+CREATE TABLE controller( controller_id int PRIMARY KEY NOT NULL AUTO_INCREMENT, controller_type varchar(100) NOT NULL, pattern varchar(100), color varchar(100) NOT NULL, img_url varchar(200) NOT NULL, price double NOT NULL);
+DROP TABLE IF EXISTS order_controllers;
+CREATE TABLE order_controllers( order_id int NOT NULL, controller_id int NOT NULL, FOREIGN KEY (order_id) REFERENCES customer_order (order_id), FOREIGN KEY (controller_id) REFERENCES controller (controller_id));
